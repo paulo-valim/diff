@@ -34,6 +34,8 @@ defmodule Diff.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:tidewave, "~> 0.5", only: [:dev]},
+      {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
       {:gettext, "~> 1.0"},
       {:git_diff, github: "ericmj/git_diff", branch: "ericmj/fix-modes"},
       {:goth, "~> 1.0"},
@@ -51,6 +53,7 @@ defmodule Diff.MixProject do
       {:phoenix, "~> 1.6"},
       {:plug_cowboy, "~> 2.1"},
       {:sentry, "~> 12.0"},
+      {:tailwind, "~> 0.4", runtime: Mix.env() == :dev},
       {:floki, "~> 0.38.1", only: :test},
       {:lazy_html, ">= 0.1.0", only: :test}
     ]
@@ -67,10 +70,10 @@ defmodule Diff.MixProject do
 
   defp aliases() do
     [
-      setup: ["deps.get", "cmd --cd assets npm install"],
+      setup: ["deps.get", "esbuild.install", "tailwind.install"],
       "assets.deploy": [
-        "cmd --cd assets npm install",
-        "cmd --cd assets node build.js --deploy",
+        "esbuild diff --minify",
+        "tailwind default --minify",
         "phx.digest"
       ]
     ]
